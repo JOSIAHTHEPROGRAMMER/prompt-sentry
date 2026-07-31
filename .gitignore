@@ -1,0 +1,32 @@
+# secrets — never commit this
+.env
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# virtual envs
+.venv/
+venv/
+env/
+
+# reports this tool generates at runtime
+reports/*.json
+!reports/.gitkeep
+
+# editor/OS cruft
+.vscode/
+.idea/
+.DS_Store
