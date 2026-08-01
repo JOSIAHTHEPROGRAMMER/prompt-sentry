@@ -11,7 +11,7 @@ __pycache__/
 *.egg-info/
 build/
 dist/
-
+scripts/smoke_test.py
 # coverage
 .coverage
 coverage.xml
