@@ -140,3 +140,39 @@ def test_render_report_includes_detail_table_when_verbose() -> None:
     output = buffer.getvalue()
     assert "Scan Summary" in output
     assert "Detailed Attack Results" in output
+
+
+def test_detailed_results_shows_error_for_unscored_result() -> None:
+    console, buffer = make_console()
+    attack = Attack(
+        id="test-attack-2",
+        name="Unscored Attack",
+        category=AttackCategory.JAILBREAK,
+        prompt="irrelevant",
+        description="tests the judge error rendering path",
+    )
+    response = ProviderResponse(
+        provider="groq", model="m", prompt="irrelevant", text="some response", latency_seconds=0.1
+    )
+    score = ScoreResult(
+        attack_id="test-attack-2",
+        provider="groq",
+        judged_by="gemini",
+        self_judged=False,
+        verdict=None,
+        severity=None,
+        reasoning="",
+        error="judge call failed after retry: rate limited",
+    )
+    result = AttackResult.build(attack, response, score)
+    report = ScanReport(
+        generated_at="2026-08-01T14:32:05+00:00",
+        results=(result,),
+        provider_summaries={},
+    )
+
+    render_detailed_results(report, console)
+
+    output = buffer.getvalue()
+    assert "error" in output
+    assert "rate limited" in output

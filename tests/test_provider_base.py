@@ -71,3 +71,12 @@ def test_latency_is_recorded(config: ProviderConfig) -> None:
 def test_provider_cannot_be_instantiated_directly(config: ProviderConfig) -> None:
     with pytest.raises(TypeError):
         Provider(config)  # type: ignore[abstract]
+
+
+
+def test_abstract_call_api_raises_not_implemented(config: ProviderConfig) -> None:
+    # calling Provider._call_api directly, bypassing FakeProvider's own
+    # override, is the only way to actually execute the abstract stub's body
+    provider = FakeProvider(config)
+    with pytest.raises(NotImplementedError):
+        Provider._call_api(provider, "hi")

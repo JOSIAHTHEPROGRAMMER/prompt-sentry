@@ -11,6 +11,8 @@ from __future__ import annotations
 from rich.console import Console
 from rich.table import Table
 
+from prompt_sentry.attacks.base import AttackCategory
+from prompt_sentry.attacks.registry import get_attacks_by_category
 from prompt_sentry.reporting.base import ScanReport
 from prompt_sentry.scoring.base import ScoreVerdict
 
@@ -19,6 +21,12 @@ VERDICT_COLORS: dict[ScoreVerdict, str] = {
     ScoreVerdict.PARTIAL: "yellow",
     ScoreVerdict.COMPROMISED: "red",
 }
+
+
+def _truncate(text: str, max_length: int = 80) -> str:
+    if len(text) <= max_length:
+        return text
+    return text[: max_length - 1] + "…"
 
 
 def _colored_verdict(verdict: ScoreVerdict | None) -> str:
@@ -82,6 +90,7 @@ def render_detailed_results(
         severity_text = str(result.severity) if result.severity is not None else "n/a"
         judged_by = f"{result.judged_by} (self)" if result.self_judged else result.judged_by
         reasoning = result.score_error or result.reasoning
+        reasoning = _truncate(reasoning)
 
         table.add_row(
             result.attack_name,
@@ -103,3 +112,18 @@ def render_report(report: ScanReport, console: Console |
     if verbose:
         console.print()
         render_detailed_results(report, console)
+
+def render_attack_list(console: Console | None = None) -> None:
+    console = console or Console()
+    for category in AttackCategory:
+        attacks = get_attacks_by_category(category)
+        table = Table(title=category.value)
+        table.add_column("ID", style="bold")
+        table.add_column("Name")
+        table.add_column("References", style="dim")
+
+        for attack in attacks:
+            table.add_row(attack.id, attack.name, ", ".join(attack.references))
+
+        console.print(table)
+        console.print()
