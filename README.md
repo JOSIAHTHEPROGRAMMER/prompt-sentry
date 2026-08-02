@@ -170,6 +170,10 @@ Every push and pull request runs lint, type checking, and the full test suite ac
 * A `--compare` mode that diffs two prior JSON reports to track whether a provider's resistance has changed over time
 * An ensemble judging mode using more than one judge per result, for higher confidence scoring at the cost of additional API calls
 
+## Contributing
+
+Contributions are welcome, whether that's a new attack, a new provider, or a bug fix. See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, code style, and the process for adding new providers or attacks to the library.
+
 ## Security disclaimer
 
 This tool is built for authorized security research and evaluation of publicly available LLM APIs. The attack library contains prompts designed to probe known weaknesses including jailbreaks, prompt injection, and data extraction techniques, some of which reference genuinely dangerous topics because a red teaming tool that only tests trivial cases does not demonstrate anything meaningful.
